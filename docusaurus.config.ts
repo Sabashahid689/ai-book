@@ -15,7 +15,8 @@ const config: Config = {
 
   // GitHub Pages deployment config
   url: 'https://sabashahid689.github.io', // your GitHub Pages URL
-  baseUrl: '/website/',                  // repo name
+  // baseUrl: '/website/',
+  baseUrl: '/',                // repo name
   organizationName: 'Sabashahid689',     // GitHub username
   projectName: 'website',                // repo name
 
