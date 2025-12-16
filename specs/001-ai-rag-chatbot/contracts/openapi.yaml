@@ -1,0 +1,210 @@
+openapi: 3.0.1
+info:
+  title: Book Content Chatbot API
+  description: API for a RAG-based chatbot system that allows users to ask questions about book content and receive AI-generated answers
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Development server
+paths:
+  /embed:
+    post:
+      summary: Generate embeddings for provided text
+      description: Converts text into vector embeddings using Cohere
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmbedRequest'
+      responses:
+        '200':
+          description: Embeddings generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmbedResponse'
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+  /upsert:
+    post:
+      summary: Store text chunks in Qdrant vector database
+      description: Adds text chunks to the Qdrant vector database for retrieval
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertRequest'
+      responses:
+        '200':
+          description: Chunks stored successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpsertResponse'
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+  /search:
+    post:
+      summary: Retrieve relevant text chunks from Qdrant
+      description: Finds relevant text chunks based on query embeddings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+      responses:
+        '200':
+          description: Relevant chunks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+  /chat:
+    post:
+      summary: Main chat endpoint that returns Gemini-generated answer
+      description: Processes user query, retrieves relevant chunks and returns AI-generated response
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+      responses:
+        '200':
+          description: Chat response generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    EmbedRequest:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          description: The text to generate embeddings for
+          example: "What are the main themes in this book?"
+    EmbedResponse:
+      type: object
+      properties:
+        embeddings:
+          type: array
+          items:
+            type: number
+          description: The generated embeddings as an array of numbers
+    UpsertRequest:
+      type: object
+      required:
+        - chunks
+      properties:
+        chunks:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeChunk'
+          description: Text chunks to store in the vector database
+    KnowledgeChunk:
+      type: object
+      required:
+        - id
+        - content
+        - source_document
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the chunk
+          example: "chunk-001"
+        content:
+          type: string
+          description: The text content from the book
+          example: "Artificial intelligence is a branch of computer science..."
+        source_document:
+          type: string
+          description: Reference to the original book/document
+          example: "my-book.txt"
+        source_page:
+          type: integer
+          description: Page number in the document
+          example: 42
+        metadata:
+          type: object
+          description: Additional information about the chunk
+          example: {"chapter": "Introduction", "topic": "AI"}
+    UpsertResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the upsert operation was successful
+        inserted_count:
+          type: integer
+          description: Number of chunks inserted
+    SearchRequest:
+      type: object
+      required:
+        - query
+        - top_k
+      properties:
+        query:
+          type: string
+          description: The query text to find similar chunks
+          example: "What are the main themes?"
+        top_k:
+          type: integer
+          description: Number of top similar chunks to retrieve
+          default: 5
+          example: 5
+    SearchResponse:
+      type: object
+      properties:
+        chunks:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeChunk'
+          description: Retrieved relevant chunks
+    ChatRequest:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          description: The user's question or prompt
+          example: "What are the main themes in this book?"
+        session_id:
+          type: string
+          description: Optional session identifier for conversation context
+          example: "session-123"
+    ChatResponse:
+      type: object
+      properties:
+        response:
+          type: string
+          description: The AI-generated answer
+          example: "The main themes in this book include..."
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeChunk'
+          description: Knowledge chunks used to generate the answer
+        query_id:
+          type: string
+          description: Unique identifier for the query
+          example: "query-456"
