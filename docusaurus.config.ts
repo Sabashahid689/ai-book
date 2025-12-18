@@ -1,28 +1,32 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
+import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
-// This config runs in Node.js (not in the browser)
 const config: Config = {
   title: 'Physical AI & Humanoid Robotics — Essentials',
   tagline: 'A comprehensive guide to building intelligent physical systems',
   favicon: 'img/favicon.ico',
 
-  // Future flags for Docusaurus v4 compatibility
+  // Docusaurus v4 future compatibility
   future: {
     v4: true,
   },
 
-  // GitHub Pages deployment config
-  url: 'https://sabashahid689.github.io', // your GitHub Pages URL
-  // baseUrl: '/website/',
-  baseUrl: '/',                // repo name
-  organizationName: 'Sabashahid689',     // GitHub username
-  projectName: 'website',                // repo name
+  // ================================
+  // GitHub Pages DEPLOY CONFIG (FINAL)
+  // ================================
+  url: 'https://sabashahid689.github.io',
+  baseUrl: '/ai-book/',
 
-  onBrokenLinks: 'throw', // fail on broken links
+  organizationName: 'Sabashahid689',
+  projectName: 'ai-book',
 
+  onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'warn',
+
+  // ================================
   // Internationalization
+  // ================================
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'ur'],
@@ -40,14 +44,16 @@ const config: Config = {
     },
   },
 
+  // ================================
   // Presets
+  // ================================
   presets: [
     [
       'classic',
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/Sabashahid689/website/tree/main/',
+          editUrl: 'https://github.com/Sabashahid689/ai-book/tree/main/',
         },
         blog: false,
         theme: {
@@ -57,12 +63,17 @@ const config: Config = {
     ],
   ],
 
-  // Theme configuration
+  // ================================
+  // Theme Config
+  // ================================
   themeConfig: {
     image: 'img/docusaurus-social-card.jpg',
+
     colorMode: {
+      defaultMode: 'light',
       respectPrefersColorScheme: true,
     },
+
     navbar: {
       title: 'Physical AI Textbook',
       logo: {
@@ -77,12 +88,13 @@ const config: Config = {
           label: 'Chapters',
         },
         {
-          href: 'https://github.com/Sabashahid689/website',
+          href: 'https://github.com/Sabashahid689/ai-book',
           label: 'GitHub',
           position: 'right',
         },
       ],
     },
+
     footer: {
       style: 'dark',
       links: [
@@ -111,7 +123,7 @@ const config: Config = {
               href: 'https://www.facebook.com/',
             },
             {
-              label: 'Linkedin',
+              label: 'LinkedIn',
               href: 'https://www.linkedin.com/in/saba-malik-050325386',
             },
           ],
@@ -121,13 +133,14 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/Sabashahid689/website',
+              href: 'https://github.com/Sabashahid689/ai-book',
             },
           ],
         },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Physical AI Textbook. Built with Docusaurus.`,
     },
+
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
